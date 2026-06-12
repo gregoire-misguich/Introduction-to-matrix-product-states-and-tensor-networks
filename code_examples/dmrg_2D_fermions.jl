@@ -122,7 +122,7 @@ function main()
 	c_exact = print_density_observables(i1, i2, obs_exact)
 
 	# Compute the ground state with "snake" DMRG 
-	for maxdim in [50, 100, 200, 400, 600, 800]
+	for maxdim in [50, 100, 200]
 		println("\n== Computing the ground state with DMRG, max. bond dim= $maxdim ==")
 		energy_dmrg, gs_dmrg = dmrg_ground_state(Lx, Ly; maxdim = maxdim, cutoff = 1e-10)
 
