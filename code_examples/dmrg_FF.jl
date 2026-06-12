@@ -11,6 +11,7 @@ end
 # DMRG benchmark for
 # H = -t Σ_j (c†_j c_{j+1} + c†_{j+1} c_j)
 function dmrg_free_fermion(N::Int)
+    @assert iseven(N) "This example assumes an even number of sites."
 
     # Spinless fermions with conserved total fermion number
     sites = siteinds("Fermion", N; conserve_qns = true)
