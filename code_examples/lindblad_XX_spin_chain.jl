@@ -34,30 +34,30 @@ mu = 1.0 # magnetization bias at the edges
 γ = 1.0 # dephasing rate in the bulk
 Γ = 1.0 # coupling strength to the baths at the edges
 t = 10 # final time
+nsteps = 60 # number of time steps to reach time t
 rho0 = State{Mixed}(System(N, Qubit()), "FullyMixed") # initial state
+maxdim = 10 # maximum bond dimension for the MPS representation of |rho>>
 L = lindbladian_xx(N, mu, γ,Γ)
 
 L_mpo = make_mpo(rho0, L) # MPO of the Lindbladian superoperator
 println("Lindbladian MPO bond dimensions = ", linkdims(L_mpo))
 W=true
 if (W)
-#Lindblad evolution of the density matrix with W^{II} MPO method:
-    rho_t = approx_W(
+    rho_t = approx_W( #Lindblad evolution with W^{II} MPO method
         L,
         t, rho0; # final time and initial state
-        nsweeps = 60, # number of time steps to reach time t
+        nsweeps = nsteps,
         w = 2,      # W^{II} scheme [Zaletel et al. (2015)]
         order = 4,  # discretization error is of order (dt)^(order+1)
-        limits = Limits(cutoff = 1e-20, maxdim = 10), # truncation parameters for the MPS of |rho>>
+        limits = Limits(cutoff = 1e-20, maxdim = maxdim), # truncation parameters for the MPS of |rho>>
         n_hermitianize = 10, # Make rho exactly hermitian every 10 steps to limit numerical errors
     )
 else    
-#Lindblad evolution with TDVP:
-    rho_t = tdvp(
+    rho_t = tdvp(#Lindblad evolution with TDVP
         L, t, rho0;
-        limits = Limits(cutoff = 1e-20, maxdim = 10),
-        nsteps=60,
-        nsite=2, #two-site TDVP allows for bond dimension growth
+        limits = Limits(cutoff = 1e-20, maxdim = maxdim),
+        nsteps=nsteps,
+        nsite=2, #two-site TDVP allows for bond dimension to grow
     )
 end
 println("rho_t max bond dimension = ", maxlinkdim(rho_t))
@@ -65,7 +65,7 @@ println("rho_t max bond dimension = ", maxlinkdim(rho_t))
 mz = real.(expect1(rho_t, Z)) # magnetization <Z_i>
 mz_exact = [sigma_z_steady(i, N, γ, Γ, mu) for i in 1:N] # exact NESS magnetization
 
-println("N = ", N, ", mu = ", mu, ", γ = ", γ, ", t = ", t)
+println("N = ", N, ", mu = ", mu, ", γ = ", γ, ", t = ", t, ", dt = ", t/nsteps, ", max dim. = ", maxdim)
 
 #print the magnetization profile and compare to the exact NESS :
 println("i, <Z_i>(t), <Z_i>(Exact NESS)")
