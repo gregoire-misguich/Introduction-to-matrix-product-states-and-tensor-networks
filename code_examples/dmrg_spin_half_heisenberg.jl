@@ -15,11 +15,10 @@ maxdim = [10,20,100,100,200]
 cutoff = [1E-10]
 energy,psi = dmrg(H,psi0;nsweeps,maxdim,cutoff)
 
-# Compare with the exact ground state energy per bondin the thermodynamic limit (Bethe ansatz) e0 = -ln(2) + 1/4
+# Compare with the exact ground state energy per bond in the thermodynamic limit (Bethe ansatz) e0 = -ln(2) + 1/4
 e0 =- log(2) + 1/4
 print("DMRG energy per bond: ", energy / (N-1), "\n")
 print("Difference with 1/4-ln(2):", energy / (N-1) - e0, "\n")
-
 
 # Compute the von Neumann entanglement entropy across the central bond.
 i = N ÷ 2
