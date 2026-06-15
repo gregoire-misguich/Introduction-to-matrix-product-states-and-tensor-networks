@@ -62,7 +62,7 @@ end
 N=40
 println("Running DMRG for free fermions on a chain of $N sites...")
 result = dmrg_free_fermion(N)
-
+println("Final bond dimension = ", maxlinkdim(result.psi))
 println("DMRG energy   = ", result.energy_dmrg)
 println("Exact energy  = ", result.energy_exact)
 println("Absolute error = ", result.abs_error)
