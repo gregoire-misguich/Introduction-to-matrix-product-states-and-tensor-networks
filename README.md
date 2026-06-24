@@ -7,6 +7,7 @@ Lecture notes of a course given at the *9th les Houches summer school on Computa
 - The folder `code_examples` contains 16  Julia code examples that are used in the lecture notes.
 - `julia_setup.md` contains basic instructions to set up a Julia environment to run these examples (with the libraries [ITensors.jl](https://github.com/ITensor/ITensors.jl),  [ITensorMPS.jl](https://github.com/ITensor/ITensorMPS.jl), and [TensorMixedStates.jl](https://github.com/jerhoud/TensorMixedStates.jl)).
 
-🚧 This text is a *work in progress* 🚧
+- The notes are available on arXiv: [arXiv:2606.24803](https://arxiv.org/abs/2606.24803) 
+
 
 Feedback welcome !
