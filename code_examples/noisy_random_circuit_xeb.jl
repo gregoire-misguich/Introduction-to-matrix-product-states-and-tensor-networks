@@ -49,13 +49,9 @@ function make_circuit(n, depth; rng)
     return circuit
 end
 
-circuit_unitary_layer(layer, ::State{Pure}) =
+# Product of the two-qubit gates of one layer of the circuit
+circuit_unitary_layer(layer) =
     prod(layer.gates[k](i, j) for (k, (i, j)) in enumerate(layer.pairs))
-
-# For custom two-site matrix operators, TensorMixedStates' mixed Gate representation
-# uses the opposite site order from the pure-state representation.
-circuit_unitary_layer(layer, ::State{Mixed}) =
-    prod(layer.gates[k](j, i) for (k, (i, j)) in enumerate(layer.pairs))
 
 # Compute the final state rho after applying the circuit and noise layers.
 function run_circuit(circuit, n, pnoise)
@@ -67,7 +63,7 @@ function run_circuit(circuit, n, pnoise)
         rho = State{Pure}(System(n, Qubit()), "0")
     end
     for layer in circuit
-        unitary_layer = circuit_unitary_layer(layer, rho)
+        unitary_layer = circuit_unitary_layer(layer)
         rho = apply(unitary_layer, rho; limits = LIMITS)
         if pnoise > 0
             noise_layer = prod(depolarizing(pnoise)(i) for i in 1:n)

@@ -11,7 +11,9 @@ Lindbladian =
     sum(Dissipator(sqrt(Γ) * Sm)(i) for i in 1:N) + # Jump operators: lowering operators σ⁻, rate Γ
     sum(Dissipator(sqrt(Γ) * Sp)(i) for i in 1:N)   # Jump operators: raising operators σ⁺, rate Γ
 # 3 observables: center OSEE, center magnetization <σ^z_{N/2}>, TraceError=Tr[ρ(t)]-1
-obs = ["osee.dat" => EE(N ÷ 2), "zmid.dat" => Z(N ÷ 2), "TraceError.dat" => TraceError] 
+obs = ["osee.dat" => EntanglementEntropy(N ÷ 2),
+       "zmid.dat" => Z(N ÷ 2),
+       "TraceError.dat" => TraceError]
 sim = SimData( # High-level simulation interface of TensorMixedStates
     name = dir,
     phases = [
