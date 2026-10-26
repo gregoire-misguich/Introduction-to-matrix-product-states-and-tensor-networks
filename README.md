@@ -2,6 +2,7 @@
 
 Lecture notes of a course given at the *9th les Houches summer school on Computational Physics: Open Quantum Systems*, in June 2026
 ([comp-quant-2026.sciencesconf.org](https://comp-quant-2026.sciencesconf.org/))
+and at the Institut de Physique Théorique, CEA Saclay, in October 2026.
 
 
 - The folder `code_examples` contains 16  Julia code examples that are used in the lecture notes.
