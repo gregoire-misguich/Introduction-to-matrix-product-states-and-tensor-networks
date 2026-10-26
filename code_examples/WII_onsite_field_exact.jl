@@ -14,11 +14,10 @@ psi0 = State{Pure}(system, "Up")
 H = sum(B * Sx(i) for i in 1:N)
 
 # WII evolution in a single finite time step.
-psi_t = approx_W(
+psi_t = evolve(
     -im * H, t, psi0;
-    nsweeps = 1,
-    order = 1,
-    w = 2,
+    nsteps = 1,
+    algo = ApproxW(order = 1, w = 2),
     limits = Limits(cutoff = 1e-14, maxdim = 4),
 )
 

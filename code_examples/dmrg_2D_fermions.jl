@@ -95,6 +95,7 @@ function dmrg_ground_state(Lx::Int, Ly::Int; maxdim::Int, cutoff::Float64)
 		os += -1.0, "Cdag", j, "C", i
 	end
 	H = MPO(os, sites) # actual construction of the Hamiltonian as an MPO
+	println("Hamiltonian MPO bond dimensions = $(linkdims(H))")
 	# Start with a half-filled state
 	state = [n <= Nf ? "Occ" : "Emp" for n in 1:N]
 	psi0 = random_mps(sites, state; linkdims = min(maxdim, 10))
@@ -114,7 +115,7 @@ function main()
 		println("Warning: single-particle spectrum with $nzero zero modes => ground state degeneracy.")
 	end
 
-	# Exact density-density observables for two sites at opposite corners of the lattice
+	# Exact density-density observables for two sites at opposite corners of the lattice (decays with distance as r^(-3) in d=2)
 	i1, i2 = snake_index(1, 1, Lx), snake_index(Lx, Ly, Lx)
 	println("\nExact observables:")
 	println("\tground state energy = $energy_exact")

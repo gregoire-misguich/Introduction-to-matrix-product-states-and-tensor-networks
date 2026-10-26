@@ -43,21 +43,23 @@ L_mpo = make_mpo(rho0, L) # MPO of the Lindbladian superoperator
 println("Lindbladian MPO bond dimensions = ", linkdims(L_mpo))
 W=true
 if (W)
-    rho_t = approx_W( #Lindblad evolution with W^{II} MPO method
+    rho_t = evolve( #Lindblad evolution with W^{II} MPO method
         L,
         t, rho0; # final time and initial state
-        nsweeps = nsteps,
-        w = 2,      # W^{II} scheme [Zaletel et al. (2015)]
-        order = 4,  # discretization error is of order (dt)^(order+1)
+        nsteps = nsteps,
+        algo = ApproxW(
+            w = 2,      # W^{II} scheme [Zaletel et al. (2015)]
+            order = 4,  # discretization error is of order (dt)^(order+1)
+            hermitianize_period = 10, # Make rho exactly hermitian every 10 steps to limit numerical errors
+        ),
         limits = Limits(cutoff = 1e-20, maxdim = maxdim), # truncation parameters for the MPS of |rho>>
-        n_hermitianize = 10, # Make rho exactly hermitian every 10 steps to limit numerical errors
     )
 else    
-    rho_t = tdvp(#Lindblad evolution with TDVP
+    rho_t = evolve(#Lindblad evolution with TDVP
         L, t, rho0;
         limits = Limits(cutoff = 1e-20, maxdim = maxdim),
         nsteps=nsteps,
-        nsite=2, #two-site TDVP allows for bond dimension to grow
+        algo = Tdvp(), #two-site TDVP allows for bond dimension to grow
     )
 end
 println("rho_t max bond dimension = ", maxlinkdim(rho_t))

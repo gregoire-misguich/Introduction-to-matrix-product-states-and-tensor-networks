@@ -30,7 +30,7 @@ function random_two_qubit_gate(rng, name)
     q, r = qr(z)
     phases = diag(r) ./ abs.(diag(r))
     u = Matrix(q) * Diagonal(phases)
-    return Operator{2}(name, u, plain_op)
+    return Operator{2}(name, u)
 end
 
 # Make the list of gates making up the random brick-wall circuit
@@ -113,12 +113,12 @@ for circuit_number in 1:NCIRCUITS
     rho0 = run_circuit(circuit, N, 0.0)
     print("Finished running ideal circuit -> rho0 = |psi><psi|\n")
 
-    @printf("trace(rho) = %.12f, purity(rho) = %.6f\n", real(trace(rho)), trace2(rho))
-    @printf("trace(rho0) = %.12f, purity(rho0) = %.6f\n", real(trace(rho0)), trace2(rho0))
+    @printf("trace(rho) = %.12f, purity(rho) = %.6f\n", real(trace(rho)), purity(rho))
+    @printf("trace(rho0) = %.12f, purity(rho0) = %.6f\n", real(trace(rho0)), purity(rho0))
     @printf("max bond dimension of rho = %d\n", maxlinkdim(rho))
     @printf("max bond dimension of rho0 = %d\n", maxlinkdim(rho0))
-    osee, _ = entanglement_entropy(rho, center_cut)
-    svn_psi, _ = entanglement_entropy(rho0, center_cut)
+    osee = entanglement_entropy(rho, center_cut)
+    svn_psi = entanglement_entropy(rho0, center_cut)
     push!(osee_values, osee)
     push!(svn_values, svn_psi)
     @printf("OSEE of rho across center bond = %.6f\n", osee)

@@ -10,23 +10,24 @@ Lindbladian =
     -im * sum(X(i) * X(i + 1) + Y(i) * Y(i + 1) for i in 1:(N - 1)) + # XX spin chain Hamiltonian
     sum(Dissipator(sqrt(Γ) * Sm)(i) for i in 1:N) + # Jump operators: lowering operators σ⁻, rate Γ
     sum(Dissipator(sqrt(Γ) * Sp)(i) for i in 1:N)   # Jump operators: raising operators σ⁺, rate Γ
-# 3 observables: center OSEE, center magnetization <σ^z_{N/2}>, TraceError=Tr[ρ(t)]-1
+# 3 observables: center OSEE, center magnetization <σ^z_{N/2}>, TraceDeviation=Tr[ρ(t)]-1
 obs = ["osee.dat" => EntanglementEntropy(N ÷ 2),
        "zmid.dat" => Z(N ÷ 2),
-       "TraceError.dat" => TraceError]
+       "TraceError.dat" => TraceDeviation]
 sim = SimData( # High-level simulation interface of TensorMixedStates
     name = dir,
     phases = [
         CreateState(# Initial state preparation
-            type = Mixed(), system = System(N, Qubit()), state = initial_state), 
+            type = Mixed, system = System(N, Qubit()), state = initial_state), 
         Evolve(algo = ApproxW(order = 4, w = 2), # W^{II} scheme
         limits = limits, duration = tmax, time_step = 0.1,
-           evolver = Lindbladian, measures = obs),
+           evolver = Lindbladian, measurements = obs),
 ])
-runTMS(sim; restart = true) # High-level simulation interface of TensorMixedStates
+cleanTMS(sim) # remove the results of a previous run
+runTMS(sim) # High-level simulation interface of TensorMixedStates
 function read_data(file)
-    data = readdlm(joinpath(dir, file), '\t')
-    return data[:, 2], data[:, 3]
+    data, _ = readdlm(joinpath(dir, file), '\t'; header = true) # first line: column names
+    return data[:, 1], data[:, 2]
 end
 
 # Plot the results (from the output files)

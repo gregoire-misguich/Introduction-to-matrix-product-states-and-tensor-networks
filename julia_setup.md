@@ -76,7 +76,7 @@ This installs:
   quantum systems.
 
 If the packages were installed earlier, update them with `Pkg.update()`:
-the code examples require TensorMixedStates 1.3.0 or later.
+the code examples require TensorMixedStates 2.0 or later.
 
 The first installation can take several minutes. The first package import may
 also take some time, because Julia compiles the packages.
